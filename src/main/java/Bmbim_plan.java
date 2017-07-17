@@ -104,20 +104,28 @@ public class Bmbim_plan {
                 if (contract_clientsign.contains(year)) {
                     StringList objectSelects3 = new StringList();
                     objectSelects3.add(DomainConstants.SELECT_ID);
-                    MapList receipts = DomainObject.findObjects(context, "Bmbim_receipt", "*",
-                            "attribute[Bmbim_poid]==" + oid2, objectSelects3);
-                    for (Iterator iter3 = receipts.iterator(); iter3.hasNext();) {
+                    MapList objectList3 = domainObject2.getRelatedObjects(context, "Bmbim_contract_to_receipt", "Bmbim_receipt", objectSelects3, new StringList(), false, true, (short) 0, null, null, 0);
+                    for (Iterator iter3 = objectList3.iterator(); iter3.hasNext();) {
                         Map map3 = (Map) iter3.next();
                         String oid3 = (String) map3.get(DomainConstants.SELECT_ID);
                         DomainObject domainObject3 = DomainObject.newInstance(context, oid3);
-                        String name3 = domainObject3.getInfo(context, "name");
-                        String poid = domainObject3.getInfo(context, "attribute[Bmbim_poid]");
                         String actualmoney = domainObject3.getInfo(context, "attribute[Bmbim_receipt_actualmoney]");
-                        System.out.println("hellozjf: " + " name3:" + name3 + " poid:" + poid + " oid2:" + oid2
-                                + " actualmoney:" + actualmoney);
-                        rec += Double
-                                .parseDouble(domainObject3.getInfo(context, "attribute[Bmbim_receipt_actualmoney]"));
+//                        System.out.println("oid2:" + oid2 + " actualmoney:" + actualmoney);
+                        rec += Double.parseDouble(actualmoney);
                     }
+//                    StringList objectSelects3 = new StringList();
+//                    objectSelects3.add(DomainConstants.SELECT_ID);
+//                    MapList receipts = DomainObject.findObjects(context, "Bmbim_receipt", "*", "attribute[Bmbim_poid]==" + oid2, objectSelects3);
+//                    for (Iterator iter3 = receipts.iterator(); iter3.hasNext();) {
+//                        Map map3 = (Map) iter3.next();
+//                        String oid3 = (String) map3.get(DomainConstants.SELECT_ID);
+//                        DomainObject domainObject3 = DomainObject.newInstance(context, oid3);
+//                        String name3 = domainObject3.getInfo(context, "name");
+//                        String poid = domainObject3.getInfo(context, "attribute[Bmbim_poid]");
+//                        String actualmoney = domainObject3.getInfo(context, "attribute[Bmbim_receipt_actualmoney]");
+//                        System.out.println("hellozjf: " + " name3:" + name3 + " poid:" + poid + " oid2:" + oid2 + " actualmoney:" + actualmoney);
+//                        rec += Double.parseDouble(domainObject3.getInfo(context, "attribute[Bmbim_receipt_actualmoney]"));
+//                    }
                 }
             }
 
@@ -127,7 +135,7 @@ public class Bmbim_plan {
         return actualTotalPayment;
     }
 
-    public Vector getTotalAmountPecentage(Context context, String[] args) throws Exception {
+    public Vector getTotalAmountPercentage(Context context, String[] args) throws Exception {
         HashMap paramMap = (HashMap) JPO.unpackArgs(args);
         MapList objectList = (MapList) paramMap.get("objectList");
 
@@ -136,8 +144,7 @@ public class Bmbim_plan {
         Vector actualTotalAmountPecentage = new Vector(objectList.size());
         Vector actualTotalAmount = getActualTotalAmount(context, args);
         // Look all the objects in the object list.
-        for (Iterator iter = objectList.iterator(), iter2 = actualTotalAmount.iterator(); iter.hasNext()
-                && iter2.hasNext();) {
+        for (Iterator iter = objectList.iterator(), iter2 = actualTotalAmount.iterator(); iter.hasNext() && iter2.hasNext();) {
             Map map = (Map) iter.next();
             String actual = (String) iter2.next();
             // Get object's id, and add it into the object array.
@@ -147,13 +154,12 @@ public class Bmbim_plan {
 
             // System.out.println("hellozjf: " + "actual:" + actual + " plan:" + plan + "
             // oid:" + oid);
-            actualTotalAmountPecentage
-                    .addElement(String.valueOf(Double.parseDouble(actual) / Double.parseDouble(plan) * 100) + "%");
+            actualTotalAmountPecentage.addElement(String.valueOf(Double.parseDouble(actual) / Double.parseDouble(plan) * 100) + "%");
         }
         return actualTotalAmountPecentage;
     }
 
-    public Vector getTotalPaymentPecentage(Context context, String[] args) throws Exception {
+    public Vector getTotalPaymentPercentage(Context context, String[] args) throws Exception {
         HashMap paramMap = (HashMap) JPO.unpackArgs(args);
         MapList objectList = (MapList) paramMap.get("objectList");
 
@@ -162,8 +168,7 @@ public class Bmbim_plan {
         Vector actualTotalPaymentPecentage = new Vector(objectList.size());
         Vector actualTotalPayment = getActualTotalPayment(context, args);
         // Look all the objects in the object list.
-        for (Iterator iter = objectList.iterator(), iter2 = actualTotalPayment.iterator(); iter.hasNext()
-                && iter2.hasNext();) {
+        for (Iterator iter = objectList.iterator(), iter2 = actualTotalPayment.iterator(); iter.hasNext() && iter2.hasNext();) {
             Map map = (Map) iter.next();
             String actual = (String) iter2.next();
             // Get object's id, and add it into the object array.
@@ -173,8 +178,7 @@ public class Bmbim_plan {
 
             // System.out.println("hellozjf: " + "actual:" + actual + " plan:" + plan + "
             // oid:" + oid);
-            actualTotalPaymentPecentage
-                    .addElement(String.valueOf(Double.parseDouble(actual) / Double.parseDouble(plan) * 100) + "%");
+            actualTotalPaymentPecentage.addElement(String.valueOf(Double.parseDouble(actual) / Double.parseDouble(plan) * 100) + "%");
         }
         return actualTotalPaymentPecentage;
     }

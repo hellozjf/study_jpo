@@ -108,20 +108,21 @@ public class Bmbim_contract extends DomainObject {
             Map map = (Map) iter.next();
             // Get object's id, and add it into the object array.
             String oid = (String) map.get(DomainConstants.SELECT_ID);
+            System.out.println("oid:" + oid);
+            DomainObject domainObject = DomainObject.newInstance(context, oid);
             
             // Search All Receipts
             double rec = 0;
-            StringList objectSelects = new StringList();
-            objectSelects.add(DomainConstants.SELECT_ID);
-            MapList receipts = DomainObject.findObjects(context, "Bmbim_receipt", "*", "attribute[Bmbim_poid]==" + oid, objectSelects);
-            for (Iterator iter2 = receipts.iterator(); iter2.hasNext(); ) {
+            StringList objectSelects2 = new StringList();
+            objectSelects2.add(DomainConstants.SELECT_ID);
+            MapList objectList2 = domainObject.getRelatedObjects(context, "Bmbim_contract_to_receipt", "Bmbim_receipt", objectSelects2, new StringList(), false, true, (short) 0, null, null, 0);
+            for (Iterator iter2 = objectList2.iterator(); iter2.hasNext();) {
                 Map map2 = (Map) iter2.next();
                 String oid2 = (String) map2.get(DomainConstants.SELECT_ID);
-                DomainObject domainObject = DomainObject.newInstance(context, oid2);
-                String name2 = domainObject.getInfo(context, "name");
-                String poid = domainObject.getInfo(context, "attribute[Bmbim_poid]");
-                String actualmoney = domainObject.getInfo(context, "attribute[Bmbim_receipt_actualmoney]");
-                rec += Double.parseDouble(domainObject.getInfo(context, "attribute[Bmbim_receipt_actualmoney]"));
+                DomainObject domainObject2 = DomainObject.newInstance(context, oid2);
+                String actualmoney = domainObject2.getInfo(context, "attribute[Bmbim_receipt_actualmoney]");
+                System.out.println("oid2:" + oid2 + " actualmoney:" + actualmoney);
+                rec += Double.parseDouble(actualmoney);
             }
             
             received.addElement(String.valueOf(rec));
@@ -138,14 +139,32 @@ public class Bmbim_contract extends DomainObject {
             Map.Entry entry = (Map.Entry) iter.next();
             Object key = entry.getKey();
             Object val = entry.getValue();
-            System.out.println("hellozjf: " + key + ":" + val);
         }
         String objectId = (String) paramMap.get("objectId");
         DomainObject domainObject = DomainObject.newInstance(context, objectId);
         // Get domainObject relatedObjects
         StringList objectSelects = new StringList();
         objectSelects.add(DomainConstants.SELECT_ID);
-        MapList mapList = domainObject.getRelatedObjects(context, "*", "*", objectSelects, new StringList(), false,
+        MapList mapList = domainObject.getRelatedObjects(context, "Bmbim_contract_to_receipt", "Bmbim_receipt", objectSelects, new StringList(), false,
+                true, (short) 0, null, null, 0);
+        return mapList;
+    }
+    
+    public MapList getAllRelatedProjects(Context context, String[] args) throws Exception {
+        // Find domainObject by objectId
+        HashMap paramMap = (HashMap) JPO.unpackArgs(args);
+        Iterator iter = paramMap.entrySet().iterator();
+        while (iter.hasNext()) {
+            Map.Entry entry = (Map.Entry) iter.next();
+            Object key = entry.getKey();
+            Object val = entry.getValue();
+        }
+        String objectId = (String) paramMap.get("objectId");
+        DomainObject domainObject = DomainObject.newInstance(context, objectId);
+        // Get domainObject relatedObjects
+        StringList objectSelects = new StringList();
+        objectSelects.add(DomainConstants.SELECT_ID);
+        MapList mapList = domainObject.getRelatedObjects(context, "Bmbim_contract_to_project", "Bmbim_project", objectSelects, new StringList(), false,
                 true, (short) 0, null, null, 0);
         return mapList;
     }
