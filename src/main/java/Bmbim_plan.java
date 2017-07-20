@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,7 +53,13 @@ public class Bmbim_plan {
             // Get object's id, and add it into the object array.
             String oid = (String) map.get(DomainConstants.SELECT_ID);
             DomainObject domainObject = DomainObject.newInstance(context, oid);
-            String year = domainObject.getInfo(context, "attribute[Bmbim_plan_year]");
+//            String year = domainObject.getInfo(context, "attribute[Bmbim_plan_year]");
+            String starttime = domainObject.getInfo(context, "attribute[Bmbim_plan_starttime]");
+            String endtime = domainObject.getInfo(context, "attribute[Bmbim_plan_endtime]");
+            System.out.println("hellozjf: " + " starttime:" + starttime + " endtime:" + endtime);
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            Date dateStartTime = sdf.parse(starttime);
+            Date dateEndTime = sdf.parse(endtime);
 
             // Search All Receipts
             double rec = 0;
@@ -63,8 +71,15 @@ public class Bmbim_plan {
                 String oid2 = (String) map2.get(DomainConstants.SELECT_ID);
                 DomainObject domainObject2 = DomainObject.newInstance(context, oid2);
                 String contract_totalamount = domainObject2.getInfo(context, "attribute[Bmbim_contract_totalamount]");
-                String contract_clientsign = domainObject2.getInfo(context, "attribute[Bmbim_contract_clientsign]");
-                if (contract_clientsign.contains(year)) {
+//                String contract_clientsign = domainObject2.getInfo(context, "attribute[Bmbim_contract_clientsign]");
+                String contract_signdate = domainObject2.getInfo(context, "attribute[Bmbim_contract_signdate]");
+                System.out.println("hellozjf: " + " contract_signdate:" + contract_signdate);
+                Date dateContractSigndate = sdf.parse(contract_signdate);
+//                if (contract_clientsign.contains(year)) {
+//                    rec += Double.parseDouble(contract_totalamount);
+//                }
+                if (dateStartTime.compareTo(dateContractSigndate) <= 0 &&
+                        dateContractSigndate.compareTo(dateEndTime) <= 0) {
                     rec += Double.parseDouble(contract_totalamount);
                 }
             }
@@ -88,7 +103,12 @@ public class Bmbim_plan {
             // Get object's id, and add it into the object array.
             String oid = (String) map.get(DomainConstants.SELECT_ID);
             DomainObject domainObject = DomainObject.newInstance(context, oid);
-            String year = domainObject.getInfo(context, "attribute[Bmbim_plan_year]");
+//            String year = domainObject.getInfo(context, "attribute[Bmbim_plan_year]");
+            String starttime = domainObject.getInfo(context, "attribute[Bmbim_plan_starttime]");
+            String endtime = domainObject.getInfo(context, "attribute[Bmbim_plan_endtime]");
+            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
+            Date dateStartTime = sdf.parse(starttime);
+            Date dateEndTime = sdf.parse(endtime);
             double rec = 0;
 
             // Search All Receipts
@@ -99,9 +119,13 @@ public class Bmbim_plan {
                 Map map2 = (Map) iter2.next();
                 String oid2 = (String) map2.get(DomainConstants.SELECT_ID);
                 DomainObject domainObject2 = DomainObject.newInstance(context, oid2);
-                String contract_clientsign = domainObject2.getInfo(context, "attribute[Bmbim_contract_clientsign]");
-
-                if (contract_clientsign.contains(year)) {
+//                String contract_clientsign = domainObject2.getInfo(context, "attribute[Bmbim_contract_clientsign]");
+                String contract_signdate = domainObject2.getInfo(context, "attribute[Bmbim_contract_signdate]");
+                Date dateContractSigndate = sdf.parse(contract_signdate);
+                
+//                if (contract_clientsign.contains(year)) {
+                if (dateStartTime.compareTo(dateContractSigndate) <= 0 &&
+                        dateContractSigndate.compareTo(dateEndTime) <= 0) {
                     StringList objectSelects3 = new StringList();
                     objectSelects3.add(DomainConstants.SELECT_ID);
                     MapList objectList3 = domainObject2.getRelatedObjects(context, "Bmbim_contract_to_receipt", "Bmbim_receipt", objectSelects3, new StringList(), false, true, (short) 0, null, null, 0);
