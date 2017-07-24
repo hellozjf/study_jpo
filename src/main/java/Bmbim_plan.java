@@ -133,9 +133,43 @@ public class Bmbim_plan {
                         Map map3 = (Map) iter3.next();
                         String oid3 = (String) map3.get(DomainConstants.SELECT_ID);
                         DomainObject domainObject3 = DomainObject.newInstance(context, oid3);
-                        String actualmoney = domainObject3.getInfo(context, "attribute[Bmbim_receipt_actualmoney]");
+//                        String actualmoney = domainObject3.getInfo(context, "attribute[Bmbim_receipt_actualmoney]");
+                        String watertransport = domainObject3.getInfo(context, "attribute[Bmbim_receipt_watertransport]");
+                        String headoffice = domainObject3.getInfo(context, "attribute[Bmbim_receipt_headoffice]");
+                        String ground = domainObject3.getInfo(context, "attribute[Bmbim_receipt_ground]");
+                        String plan = domainObject3.getInfo(context, "attribute[Bmbim_receipt_plan]");
+                        String echo = domainObject3.getInfo(context, "attribute[Bmbim_receipt_echo]");
+                        String building = domainObject3.getInfo(context, "attribute[Bmbim_receipt_building]");
+                        if (watertransport == null) {
+                            watertransport = "0";
+                        }
+                        if (headoffice == null) {
+                            headoffice = "0";
+                        }
+                        if (ground == null) {
+                            ground = "0";
+                        }
+                        if (plan == null) {
+                            plan = "0";
+                        }
+                        if (echo == null) {
+                            echo = "0";
+                        }
+                        if (building == null) {
+                            building = "0";
+                        }
+//                        System.out.println("watertransport:" + watertransport +
+//                                " headoffice:" + headoffice +
+//                                " ground:" + ground +
+//                                " plan:" + plan +
+//                                " echo:" + echo +
+//                                " building: " + building);
+                        double actual = Double.parseDouble(watertransport) + Double.parseDouble(headoffice) +
+                                Double.parseDouble(ground) + Double.parseDouble(plan) +
+                                Double.parseDouble(echo) + Double.parseDouble(building);
 //                        System.out.println("oid2:" + oid2 + " actualmoney:" + actualmoney);
-                        rec += Double.parseDouble(actualmoney);
+//                        rec += Double.parseDouble(actualmoney);
+                        rec += actual;
                     }
 //                    StringList objectSelects3 = new StringList();
 //                    objectSelects3.add(DomainConstants.SELECT_ID);

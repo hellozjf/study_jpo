@@ -36,6 +36,53 @@ public class Bmbim_receipt extends DomainObject {
         // Return the object array.
         return oids;
     }
+    
+    public Vector getActualmoney(Context context, String[] args) throws Exception {
+        HashMap paramMap = (HashMap) JPO.unpackArgs(args);
+        MapList objectList = (MapList) paramMap.get("objectList");
+        
+        Vector actualmoney = new Vector(objectList.size());
+        for (Iterator iter = objectList.iterator(); iter.hasNext();) {
+            Map map = (Map) iter.next();
+            String oid = (String) map.get(DomainConstants.SELECT_ID);
+            DomainObject domainObject = DomainObject.newInstance(context, oid);
+            String watertransport = domainObject.getInfo(context, "attribute[Bmbim_receipt_watertransport]");
+            String headoffice = domainObject.getInfo(context, "attribute[Bmbim_receipt_headoffice]");
+            String ground = domainObject.getInfo(context, "attribute[Bmbim_receipt_ground]");
+            String plan = domainObject.getInfo(context, "attribute[Bmbim_receipt_plan]");
+            String echo = domainObject.getInfo(context, "attribute[Bmbim_receipt_echo]");
+            String building = domainObject.getInfo(context, "attribute[Bmbim_receipt_building]");
+            if (watertransport == null) {
+                watertransport = "0";
+            }
+            if (headoffice == null) {
+                headoffice = "0";
+            }
+            if (ground == null) {
+                ground = "0";
+            }
+            if (plan == null) {
+                plan = "0";
+            }
+            if (echo == null) {
+                echo = "0";
+            }
+            if (building == null) {
+                building = "0";
+            }
+            System.out.println("watertransport:" + watertransport +
+                    " headoffice:" + headoffice +
+                    " ground:" + ground +
+                    " plan:" + plan +
+                    " echo:" + echo +
+                    " building: " + building);
+            double actual = Double.parseDouble(watertransport) + Double.parseDouble(headoffice) +
+                    Double.parseDouble(ground) + Double.parseDouble(plan) +
+                    Double.parseDouble(echo) + Double.parseDouble(building);
+            actualmoney.addElement(String.valueOf(actual));
+        }
+        return actualmoney;
+    }
 
     public Object createAndConnect(Context context, String[] args) throws Exception {
         HashMap programMap = (HashMap) JPO.unpackArgs(args);
