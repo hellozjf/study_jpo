@@ -39,6 +39,99 @@ public class Bmbim_contract extends DomainObject {
         return oids;
     }
     
+    public Vector getSubPackage(Context context, String[] args) throws Exception {
+        // Get an object list which based on args.
+        HashMap paramMap = (HashMap) JPO.unpackArgs(args);
+        MapList objectList = (MapList) paramMap.get("objectList");
+        
+        // Create an object array. The value of the object array will be
+        // displayed in the column.
+        Vector oids = new Vector(objectList.size());
+        // Look all the objects in the object list.
+        for (Iterator iter = objectList.iterator(); iter.hasNext();) {
+            Map map = (Map) iter.next();
+            // Get object's id, and add it into the object array.
+            String oid = (String) map.get(DomainConstants.SELECT_ID);
+            DomainObject domainObject = DomainObject.newInstance(context, oid);
+            
+            // Search All Projects
+            double rec = 0;
+            StringList objectSelects2 = new StringList();
+            objectSelects2.add(DomainConstants.SELECT_ID);
+            MapList objectList2 = domainObject.getRelatedObjects(context, "Bmbim_contract_to_project", "Bmbim_project", objectSelects2, new StringList(), false, true, (short) 0, null, null, 0);
+            for (Iterator iter2 = objectList2.iterator(); iter2.hasNext();) {
+                Map map2 = (Map) iter2.next();
+                String oid2 = (String) map2.get(DomainConstants.SELECT_ID);
+                DomainObject domainObject2 = DomainObject.newInstance(context, oid2);
+                String subpackage = domainObject2.getInfo(context, "attribute[Bmbim_project_subpackage]");
+                if (subpackage == null) {
+                    subpackage = "0";
+                }
+                rec += Double.parseDouble(subpackage);
+            }
+            
+            oids.addElement(String.valueOf(rec));
+        }
+        // Return the object array.
+        return oids;
+    }
+    
+    public Vector getSubPackagePaid(Context context, String[] args) throws Exception {
+        // Get an object list which based on args.
+        HashMap paramMap = (HashMap) JPO.unpackArgs(args);
+        MapList objectList = (MapList) paramMap.get("objectList");
+        
+        // Create an object array. The value of the object array will be
+        // displayed in the column.
+        Vector oids = new Vector(objectList.size());
+        // Look all the objects in the object list.
+        for (Iterator iter = objectList.iterator(); iter.hasNext();) {
+            Map map = (Map) iter.next();
+            // Get object's id, and add it into the object array.
+            String oid = (String) map.get(DomainConstants.SELECT_ID);
+            DomainObject domainObject = DomainObject.newInstance(context, oid);
+            
+            // Search All Projects
+            double rec = 0;
+            StringList objectSelects2 = new StringList();
+            objectSelects2.add(DomainConstants.SELECT_ID);
+            MapList objectList2 = domainObject.getRelatedObjects(context, "Bmbim_contract_to_project", "Bmbim_project", objectSelects2, new StringList(), false, true, (short) 0, null, null, 0);
+            for (Iterator iter2 = objectList2.iterator(); iter2.hasNext();) {
+                Map map2 = (Map) iter2.next();
+                String oid2 = (String) map2.get(DomainConstants.SELECT_ID);
+                DomainObject domainObject2 = DomainObject.newInstance(context, oid2);
+                String subpackagepaid = domainObject2.getInfo(context, "attribute[Bmbim_project_subpackagepaid]");
+                if (subpackagepaid == null) {
+                    subpackagepaid = "0";
+                }
+                rec += Double.parseDouble(subpackagepaid);
+            }
+            
+            oids.addElement(String.valueOf(rec));
+        }
+        // Return the object array.
+        return oids;
+    }
+    
+    public Vector getSubPackageUnpaid(Context context, String[] args) throws Exception {
+        // Get an object list which based on args.
+        HashMap paramMap = (HashMap) JPO.unpackArgs(args);
+        MapList objectList = (MapList) paramMap.get("objectList");
+        
+        // Create an object array. The value of the object array will be
+        // displayed in the column.
+        Vector oids = new Vector(objectList.size());
+        // Look all the objects in the object list.
+        Vector subPackage = getSubPackage(context, args);
+        Vector subPackagePaid = getSubPackagePaid(context, args);
+        for (int i = 0; i < objectList.size(); i++) {
+            double subPackageUnpaid = Double.parseDouble((String) subPackage.get(i)) - Double.parseDouble((String) subPackagePaid.get(i));
+            oids.addElement(String.valueOf(subPackageUnpaid));
+        }
+        // Return the object array.
+        return oids;
+    }
+    
     public Vector getStatesI18N(Context context, String[] args) throws Exception {
         // Get an object list which based on args.
         HashMap paramMap = (HashMap) JPO.unpackArgs(args);
